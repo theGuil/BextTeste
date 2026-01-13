@@ -12,10 +12,15 @@ interface AuthState {
     loadingRegister: boolean;
 }
 
+const STORAGE_LOGADO = "auth:logado";
+const STORAGE_USER = "auth:user";
+
 const criarEstadoInicial = (): AuthState => ({
-    user: null,
+    user: sessionStorage.getItem(STORAGE_USER)
+        ? JSON.parse(sessionStorage.getItem(STORAGE_USER)!)
+        : null,
     token: null,
-    logado: false,
+    logado: sessionStorage.getItem(STORAGE_LOGADO) === "true",
     loadingLogin: false,
     loadingRegister: false,
 });
@@ -30,6 +35,14 @@ const useAuthStore = defineStore("auth", {
             this.states = produce(this.states, draft => {
                 updater(draft);
             });
+
+            sessionStorage.setItem(STORAGE_LOGADO, String(this.states.logado));
+
+            if (this.states.user) {
+                sessionStorage.setItem(STORAGE_USER, JSON.stringify(this.states.user));
+            } else {
+                sessionStorage.removeItem(STORAGE_USER);
+            }
         },
 
         async Login(props: T.Auth.Login.Input): Promise<T.Auth.Login.Output | null> {
@@ -61,8 +74,8 @@ const useAuthStore = defineStore("auth", {
             } finally {
                 this.SetState(s => { s.loadingLogin = false });
             }
-        }
-        ,
+        },
+
         async Register(props: T.Auth.Register.Input): Promise<T.Auth.Register.Output | null> {
             try {
                 this.SetState(s => { s.loadingRegister = true });
@@ -91,10 +104,9 @@ const useAuthStore = defineStore("auth", {
             } finally {
                 this.SetState(s => { s.loadingRegister = false });
             }
-        }
-        ,
+        },
 
-        Logout() {
+        sair() {
             this.SetState(s => {
                 s.user = null;
                 s.token = null;
@@ -112,7 +124,7 @@ class ContextoAuth {
     public Api = {
         Login: (props: T.Auth.Login.Input) => this.store.Login(props),
         Register: (props: T.Auth.Register.Input) => this.store.Register(props),
-        Logout: () => this.store.Logout(),
+        Sair: () => this.store.sair(),
     };
 
     public get GetJsx(): AuthState {
