@@ -1,32 +1,36 @@
-# Rsbuild project
+## Link para acessar projeto em produção
+
+```bash
+https://bext-teste.navsoftware.com.br
+```
 
 ## Setup
 
-Install the dependencies:
+Instalar dependencias
 
 ```bash
 npm install
 ```
 
-## Get started
+## Start do projeto
 
-Start the dev server, and the app will be available at [http://localhost:3000](http://localhost:3000).
+Projeto rodara no url: http://localhost:3000
 
 ```bash
 npm run dev
 ```
 
-Build the app for production:
+## Build
+
+Comando Build para produção:
 
 ```bash
 npm run build
 ```
 
-Preview the production build locally:
+## Preview
 
-```bash
-npm run preview
-```
+Preview do projeto:
 
 ```bash
 npm run preview
@@ -48,6 +52,8 @@ npm run preview
 🗃️ raw: Adiciona dados RAW  
 🧹 cleanup: Limpa validação  
 🗑️ remove: Remove arquivos
+
+Formato do commit:
 
 git init
 git add .
