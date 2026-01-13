@@ -14,7 +14,7 @@ namespace TypesAuth {
 
         export const InputSchema = z4.object({
             data: z4.object({
-                email: z4.string().email(),
+                email: z4.email(),
                 senha: z4.string().min(6),
             }),
         });
@@ -33,7 +33,7 @@ namespace TypesAuth {
 
         export const InputSchema = z4.object({
             data: z4.object({
-                email: z4.string().email(),
+                email: z4.email(),
                 senha: z4.string().min(6),
             }),
         });
