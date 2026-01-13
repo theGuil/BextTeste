@@ -2,8 +2,20 @@ import { http, HttpResponse } from "msw";
 import T from "../types";
 
 const STORAGE_KEY = "msw:tarefas";
+const USER_KEY = "msw:users";
 
-const load = (): T.Tarefa.TarefaBase[] => {
+const loadUsers = (): T.Auth.User[] => {
+    const data = localStorage.getItem(USER_KEY);
+    return data ? JSON.parse(data) : [];
+};
+
+const saveUsers = (users: T.Auth.User[]) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(users));
+};
+
+let users: T.Auth.User[] = loadUsers();
+
+const loadTarefas = (): T.Tarefa.TarefaBase[] => {
     const data = localStorage.getItem(STORAGE_KEY);
     return data
         ? JSON.parse(data)
@@ -29,11 +41,11 @@ const save = (data: T.Tarefa.TarefaBase[]) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 };
 
-let tarefas: T.Tarefa.TarefaBase[] = load();
+let tarefas: T.Tarefa.TarefaBase[] = loadTarefas();
 
 export const handlers = [
     http.get(T.Tarefa.Listar.route, () => {
-        tarefas = load();
+        tarefas = loadTarefas();
 
         const output: T.Tarefa.Listar.Output = {
             data: {
@@ -101,4 +113,61 @@ export const handlers = [
         return HttpResponse.json(output);
     }),
 
+    http.post(T.Auth.Register.route, async ({ request }) => {
+        const body = (await request.json()) as T.Auth.Register.Input;
+        const { email, senha } = body.data;
+
+        if (users.find(u => u.email === email)) {
+            return HttpResponse.json(
+                { message: "Email já cadastrado" },
+                { status: 409 }
+            );
+        }
+
+        const newUser: T.Auth.User = {
+            id: Date.now(),
+            email,
+            senha,
+        };
+
+        users.push(newUser);
+        saveUsers(users);
+
+        const output: T.Auth.Register.Output = {
+            data: {
+                user: {
+                    id: newUser.id,
+                    email: newUser.email,
+                },
+            },
+        };
+
+        return HttpResponse.json(output, { status: 201 });
+    }),
+
+    http.post(T.Auth.Login.route, async ({ request }) => {
+        const body = (await request.json()) as T.Auth.Login.Input;
+        const { email, senha } = body.data;
+
+        const user = users.find(u => u.email === email && u.senha === senha);
+
+        if (!user) {
+            return HttpResponse.json(
+                { message: "Credenciais inválidas" },
+                { status: 401 }
+            );
+        }
+
+        const output: T.Auth.Login.Output = {
+            data: {
+                token: "fake-jwt-token-" + user.id,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                },
+            },
+        };
+
+        return HttpResponse.json(output);
+    }),
 ];

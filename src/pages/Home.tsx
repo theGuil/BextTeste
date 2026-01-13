@@ -28,7 +28,7 @@ export default defineComponent(() => {
         newDescricao.value = "";
     };
 
-    const update = async (tarefa: T.TarefaBase) => {
+    const update = async (tarefa: T.Tarefa.TarefaBase) => {
         await ContextoTarefa.Api.Atualizar({
             params: { id: tarefa.id },
             data: { titulo: tarefa.titulo + " ✔" },

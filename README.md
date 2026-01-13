@@ -51,5 +51,5 @@ npm run preview
 
 git init
 git add .
-git commit -m "⚡ perf: "
+git commit -m "⚡ feat: "
 git push -u origin producao
