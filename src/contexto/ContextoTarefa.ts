@@ -132,7 +132,7 @@ const useTarefaStore = defineStore("tarefa", {
     },
 });
 
-class contexto_tarefa {
+class ContextoTarefa {
     private get store() {
         return useTarefaStore();
     }
@@ -157,4 +157,4 @@ class contexto_tarefa {
     };
 }
 
-export default new contexto_tarefa();
+export default new ContextoTarefa();

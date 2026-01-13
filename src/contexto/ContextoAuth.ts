@@ -77,7 +77,7 @@ const useAuthStore = defineStore("auth", {
     },
 });
 
-class contexto_auth {
+class ContextoAuth {
     private get store() {
         return useAuthStore();
     }
@@ -100,4 +100,4 @@ class contexto_auth {
     };
 }
 
-export default new contexto_auth();
+export default new ContextoAuth();
