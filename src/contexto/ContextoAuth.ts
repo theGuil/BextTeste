@@ -7,6 +7,7 @@ type User = Omit<T.Auth.User, "senha">;
 interface AuthState {
     user: User | null;
     token: string | null;
+    logado: boolean;
     loadingLogin: boolean;
     loadingRegister: boolean;
 }
@@ -14,6 +15,7 @@ interface AuthState {
 const criarEstadoInicial = (): AuthState => ({
     user: null,
     token: null,
+    logado: false,
     loadingLogin: false,
     loadingRegister: false,
 });
@@ -45,6 +47,7 @@ const useAuthStore = defineStore("auth", {
                 this.SetState(s => {
                     s.user = data.data.user;
                     s.token = data.data.token;
+                    s.logado = true;
                 });
 
                 return data;
@@ -67,12 +70,21 @@ const useAuthStore = defineStore("auth", {
 
                 this.SetState(s => {
                     s.user = data.data.user;
+                    s.logado = true;
                 });
 
                 return data;
             } finally {
                 this.SetState(s => { s.loadingRegister = false });
             }
+        },
+
+        Logout() {
+            this.SetState(s => {
+                s.user = null;
+                s.token = null;
+                s.logado = false;
+            });
         },
     },
 });
@@ -85,6 +97,7 @@ class ContextoAuth {
     public Api = {
         Login: (props: T.Auth.Login.Input) => this.store.Login(props),
         Register: (props: T.Auth.Register.Input) => this.store.Register(props),
+        Logout: () => this.store.Logout(),
     };
 
     public get GetJsx(): AuthState {
