@@ -1,25 +1,40 @@
 import { http, HttpResponse } from "msw";
 import T from "./types";
 
-let tarefas: T.TarefaBase[] = [
-    {
-        id: 1,
-        titulo: "Aprender Vue 3",
-        descricao: "Estudar Composition API",
-        prioridade: "Alta",
-        data_conclusao: "2024-01-10",
-    },
-    {
-        id: 2,
-        titulo: "Aprender Vue 3 + TSX",
-        descricao: "Vue 3 com TypeScript",
-        prioridade: "Média",
-        data_conclusao: "2024-01-15",
-    },
-];
+const STORAGE_KEY = "msw:tarefas";
+
+const load = (): T.TarefaBase[] => {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data
+        ? JSON.parse(data)
+        : [
+            {
+                id: 1,
+                titulo: "Aprender Vue 3",
+                descricao: "Estudar Composition API",
+                prioridade: "Alta",
+                data_conclusao: "2024-01-10",
+            },
+            {
+                id: 2,
+                titulo: "Aprender Vue 3 + TSX",
+                descricao: "Vue 3 com TypeScript",
+                prioridade: "Média",
+                data_conclusao: "2024-01-15",
+            },
+        ];
+};
+
+const save = (data: T.TarefaBase[]) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
+let tarefas: T.TarefaBase[] = load();
 
 export const handlers = [
     http.get(T.Listar.route, () => {
+        tarefas = load();
+
         const output: T.Listar.Output = {
             data: {
                 tarefas,
@@ -37,6 +52,7 @@ export const handlers = [
         };
 
         tarefas.unshift(novaTarefa);
+        save(tarefas);
 
         const output: T.Criar.Output = {
             data: {
@@ -58,6 +74,8 @@ export const handlers = [
             tarefas[index] = { ...tarefas[index], ...body };
         }
 
+        save(tarefas);
+
         const output: T.Atualizar.Output = {
             data: {
                 tarefa: tarefas[index],
@@ -72,6 +90,7 @@ export const handlers = [
         const tarefaId = Number(id);
 
         tarefas = tarefas.filter(t => t.id !== tarefaId);
+        save(tarefas);
 
         const output: T.Remover.Output = {
             data: {

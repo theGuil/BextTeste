@@ -11,8 +11,19 @@ interface TarefaState {
     loadingCriar: boolean;
 }
 
+const STORAGE_KEY = "msw:tarefas";
+
+const loadStorage = (): Tarefa[] => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+};
+
+const saveStorage = (data: Tarefa[]) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+};
+
 const criarEstadoInicial = (): TarefaState => ({
-    lista: [],
+    lista: loadStorage(),
     selecionada: null,
     loading: false,
     loadingCriar: false,
@@ -37,6 +48,8 @@ const useTarefaStore = defineStore("tarefa", {
                 const res = await fetch(T.Listar.route);
                 const data: T.Listar.Output = await res.json();
 
+                saveStorage(data.data.tarefas);
+
                 this.SetState(s => {
                     s.lista = data.data.tarefas;
                 });
@@ -59,8 +72,11 @@ const useTarefaStore = defineStore("tarefa", {
 
                 const data: T.Criar.Output = await res.json();
 
+                const novaLista = [data.data.tarefa, ...this.states.lista];
+                saveStorage(novaLista);
+
                 this.SetState(s => {
-                    s.lista.unshift(data.data.tarefa);
+                    s.lista = novaLista;
                 });
 
                 return data;
@@ -80,9 +96,14 @@ const useTarefaStore = defineStore("tarefa", {
 
             const data: T.Atualizar.Output = await res.json();
 
+            const novaLista = this.states.lista.map(t =>
+                t.id === props.params.id ? data.data.tarefa : t
+            );
+
+            saveStorage(novaLista);
+
             this.SetState(s => {
-                const index = s.lista.findIndex(t => t.id === props.params.id);
-                if (index !== -1) s.lista[index] = data.data.tarefa;
+                s.lista = novaLista;
             });
 
             return data;
@@ -94,8 +115,12 @@ const useTarefaStore = defineStore("tarefa", {
             const res = await fetch(url, { method: "DELETE" });
             const data: T.Remover.Output = await res.json();
 
+            const novaLista = this.states.lista.filter(t => t.id !== props.params.id);
+
+            saveStorage(novaLista);
+
             this.SetState(s => {
-                s.lista = s.lista.filter(t => t.id !== props.params.id);
+                s.lista = novaLista;
             });
 
             return data;
