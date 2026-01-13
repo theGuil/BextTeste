@@ -1,8 +1,6 @@
 ## Link para acessar projeto em produção
 
-```bash
 https://bext-teste.navsoftware.com.br
-```
 
 ## Setup
 
