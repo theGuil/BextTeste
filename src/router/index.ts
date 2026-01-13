@@ -13,6 +13,7 @@ import AuthRegister from "@/pages/AuthRegister";
 
 // Pages
 import Home from "@/pages/Home";
+import PageNotFaund from "@/componentes/PageNotFaund.tsx";
 
 export const router = createRouter({
     history: createWebHistory(),
@@ -45,5 +46,10 @@ export const router = createRouter({
             component: PublicRoute,
             children: [{ path: "", name: "register", component: AuthRegister }],
         },
+        {
+            path: "/:pathMatch(.*)*",
+            name: "not-found",
+            component: PageNotFaund,
+        }
     ],
 });
