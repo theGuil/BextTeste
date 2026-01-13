@@ -1,7 +1,7 @@
 /** @jsxImportSource vue */
 import { defineComponent, ref, onMounted, watchEffect } from "vue";
 import ContextoTarefa from "@/contexto/ContextoTarefa";
-import T from "@/types/types";
+import T from "@/types";
 
 export default defineComponent(() => {
     const newTitulo = ref("");

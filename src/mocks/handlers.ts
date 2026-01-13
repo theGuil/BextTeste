@@ -1,9 +1,9 @@
 import { http, HttpResponse } from "msw";
-import T from "../types/types";
+import T from "../types";
 
 const STORAGE_KEY = "msw:tarefas";
 
-const load = (): T.TarefaBase[] => {
+const load = (): T.Tarefa.TarefaBase[] => {
     const data = localStorage.getItem(STORAGE_KEY);
     return data
         ? JSON.parse(data)
@@ -25,17 +25,17 @@ const load = (): T.TarefaBase[] => {
         ];
 };
 
-const save = (data: T.TarefaBase[]) => {
+const save = (data: T.Tarefa.TarefaBase[]) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 };
 
-let tarefas: T.TarefaBase[] = load();
+let tarefas: T.Tarefa.TarefaBase[] = load();
 
 export const handlers = [
-    http.get(T.Listar.route, () => {
+    http.get(T.Tarefa.Listar.route, () => {
         tarefas = load();
 
-        const output: T.Listar.Output = {
+        const output: T.Tarefa.Listar.Output = {
             data: {
                 tarefas,
             },
@@ -44,17 +44,17 @@ export const handlers = [
         return HttpResponse.json(output);
     }),
 
-    http.post(T.Criar.route, async ({ request }) => {
-        const body = (await request.json()) as T.Criar.Input;
+    http.post(T.Tarefa.Criar.route, async ({ request }) => {
+        const body = (await request.json()) as T.Tarefa.Criar.Input;
 
-        const novaTarefa: T.TarefaBase = {
+        const novaTarefa: T.Tarefa.TarefaBase = {
             ...body.data,
         };
 
         tarefas.unshift(novaTarefa);
         save(tarefas);
 
-        const output: T.Criar.Output = {
+        const output: T.Tarefa.Criar.Output = {
             data: {
                 tarefa: novaTarefa,
             },
@@ -63,9 +63,9 @@ export const handlers = [
         return HttpResponse.json(output, { status: 201 });
     }),
 
-    http.put(T.Atualizar.route, async ({ request, params }) => {
+    http.put(T.Tarefa.Atualizar.route, async ({ request, params }) => {
         const { id } = params as { id: string };
-        const body = (await request.json()) as T.Atualizar.Input["data"];
+        const body = (await request.json()) as T.Tarefa.Atualizar.Input["data"];
 
         const tarefaId = Number(id);
 
@@ -76,7 +76,7 @@ export const handlers = [
 
         save(tarefas);
 
-        const output: T.Atualizar.Output = {
+        const output: T.Tarefa.Atualizar.Output = {
             data: {
                 tarefa: tarefas[index],
             },
@@ -85,14 +85,14 @@ export const handlers = [
         return HttpResponse.json(output);
     }),
 
-    http.delete(T.Remover.route, ({ params }) => {
+    http.delete(T.Tarefa.Remover.route, ({ params }) => {
         const { id } = params as { id: string };
         const tarefaId = Number(id);
 
         tarefas = tarefas.filter(t => t.id !== tarefaId);
         save(tarefas);
 
-        const output: T.Remover.Output = {
+        const output: T.Tarefa.Remover.Output = {
             data: {
                 tarefa: {},
             },
@@ -100,4 +100,5 @@ export const handlers = [
 
         return HttpResponse.json(output);
     }),
+
 ];

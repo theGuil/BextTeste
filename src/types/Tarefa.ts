@@ -1,6 +1,6 @@
 import z4 from "zod/v4";
 
-namespace T {
+namespace TypesTarefa {
     export const TarefaBaseSchema = z4.object({
         id: z4.number().int(),
         titulo: z4.string().min(1),
@@ -75,4 +75,4 @@ namespace T {
     }
 }
 
-export default T;
+export default TypesTarefa;
