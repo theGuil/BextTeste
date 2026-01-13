@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { produce } from "immer";
-import T from "@/mocks/types";
+import T from "@/types/types";
 
 type Tarefa = T.TarefaBase;
 

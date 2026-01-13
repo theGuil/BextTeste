@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import T from "./types";
+import T from "../types/types";
 
 const STORAGE_KEY = "msw:tarefas";
 
