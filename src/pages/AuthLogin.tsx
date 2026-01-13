@@ -35,7 +35,7 @@ export default defineComponent(() => {
             <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
                 <div class="mb-6">
                     <h1 class="text-2xl font-semibold text-slate-800">{modo.value === "login" ? "Entrar" : "Criar conta"}</h1>
-                    <p class="text-sm text-slate-500">Autenticação com MSW + Pinia + Zod</p>
+                    <p class="text-sm text-slate-500">Faça o login e começe as tarefas</p>
                 </div>
 
                 <div class="space-y-3 mb-6">

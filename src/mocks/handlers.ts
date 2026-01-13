@@ -149,6 +149,19 @@ export const handlers = [
         const body = (await request.json()) as T.Auth.Login.Input;
         const { email, senha } = body.data;
 
+        const SAFE_USER = {
+            id: 1,
+            email: "bextteste@gmail.com",
+            senha: "123456",
+        };
+
+        let users: T.Auth.User[] = loadUsers();
+
+        if (!users.find(u => u.email === SAFE_USER.email)) {
+            users.push(SAFE_USER);
+            saveUsers(users);
+        }
+
         const user = users.find(u => u.email === email && u.senha === senha);
 
         if (!user) {

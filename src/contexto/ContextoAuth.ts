@@ -42,20 +42,27 @@ const useAuthStore = defineStore("auth", {
                     body: JSON.stringify(props),
                 });
 
-                const data: T.Auth.Login.Output = await res.json();
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.error("Erro login:", data.message);
+                    return null;
+                }
+
+                const typed = data as T.Auth.Login.Output;
 
                 this.SetState(s => {
-                    s.user = data.data.user;
-                    s.token = data.data.token;
+                    s.user = typed.data.user;
+                    s.token = typed.data.token;
                     s.logado = true;
                 });
 
-                return data;
+                return typed;
             } finally {
                 this.SetState(s => { s.loadingLogin = false });
             }
-        },
-
+        }
+        ,
         async Register(props: T.Auth.Register.Input): Promise<T.Auth.Register.Output | null> {
             try {
                 this.SetState(s => { s.loadingRegister = true });
@@ -66,18 +73,26 @@ const useAuthStore = defineStore("auth", {
                     body: JSON.stringify(props),
                 });
 
-                const data: T.Auth.Register.Output = await res.json();
+                const data = await res.json();
+
+                if (!res.ok) {
+                    console.error("Erro register:", data.message);
+                    return null;
+                }
+
+                const typed = data as T.Auth.Register.Output;
 
                 this.SetState(s => {
-                    s.user = data.data.user;
+                    s.user = typed.data.user;
                     s.logado = true;
                 });
 
-                return data;
+                return typed;
             } finally {
                 this.SetState(s => { s.loadingRegister = false });
             }
-        },
+        }
+        ,
 
         Logout() {
             this.SetState(s => {
