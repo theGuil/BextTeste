@@ -1,3 +1,8 @@
+## Login para testes
+
+email: bextteste@gmail.com
+senha: 123456
+
 ## Link para acessar projeto em produção
 
 https://bext-teste.navsoftware.com.br
