@@ -130,6 +130,38 @@ const useTarefaStore = defineStore("tarefa", {
             return data;
         },
 
+        async Filtrar(props: T.Tarefa.Filtrar.Input): Promise<T.Tarefa.Filtrar.Response> {
+            try {
+                this.SetState(s => { s.loading = true });
+
+                const params = new URLSearchParams();
+
+                if (props.data.categoria) {
+                    params.append("categoria", props.data.categoria);
+                }
+
+                if (props.data.prioridade) {
+                    params.append("prioridade", props.data.prioridade);
+                }
+
+                const url = `${T.Tarefa.Filtrar.route}?${params.toString()}`;
+
+                const res = await fetch(url, {
+                    method: "GET",
+                });
+
+                const data: T.Tarefa.Filtrar.Response = await res.json();
+
+                this.SetState(s => {
+                    s.lista = data.data.tarefas;
+                });
+
+                return data;
+            } finally {
+                this.SetState(s => { s.loading = false });
+            }
+        },
+
         selecionar(tarefa: Tarefa) {
             this.SetState(s => { s.selecionada = tarefa });
         },
@@ -146,6 +178,7 @@ class ContextoTarefa {
         Criar: (props: T.Tarefa.Criar.Input) => this.store.Criar(props),
         Atualizar: (props: T.Tarefa.Atualizar.Input) => this.store.Atualizar(props),
         Remover: (props: T.Tarefa.Remover.Input) => this.store.Remover(props),
+        Filtrar: (props: T.Tarefa.Filtrar.Input) => this.store.Filtrar(props),
     };
 
     public get GetJsx(): TarefaState {

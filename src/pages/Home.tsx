@@ -1,10 +1,14 @@
 /** @jsxImportSource vue */
 import { defineComponent, ref, onMounted, computed } from "vue";
-import ContextoTarefa from "@/contexto/ContextoTarefa";
-import DrawerLateral from "@/componentes/DrawerLateral";
-import FormularioTarefa from "@/componentes/FormularioTarefa";
+// TYPES
 import type { TypeDrawerPadraoRef } from "@/componentes/DrawerLateral";
 import type T from "@/types";
+// CONTEXTO
+import ContextoTarefa from "@/contexto/ContextoTarefa";
+//COMPONENTES
+import FormularioTarefa from "@/componentes/FormularioTarefa";
+import DrawerLateral from "@/componentes/DrawerLateral";
+import FiltrarTarefas from "@/componentes/FiltrarTarefas";
 
 export default defineComponent(() => {
     const drawerRef = ref<TypeDrawerPadraoRef | null>(null);
@@ -55,8 +59,10 @@ export default defineComponent(() => {
     return () => (
         <div class="h-[calc(100vh-96px)] flex flex-col  relative">
             <header class="mb-4 px-2 md:px-4 flex items-center justify-between">
-                <h1 class="text-xl font-semibold text-slate-900">Tarefas</h1>
-
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-semibold text-slate-900">Tarefas</h1>
+                    <FiltrarTarefas />
+                </div>
                 <button
                     onClick={() => {
                         ContextoTarefa.SetState((s) => {

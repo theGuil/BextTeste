@@ -1,5 +1,7 @@
 import z4 from "zod/v4";
 
+import TypesResponse from "./TypesResponse";
+
 namespace TypesTarefa {
     export const CategoriaEnum = z4.enum(["Pessoal", "Trabalho", "Estudo"]);
 
@@ -76,6 +78,25 @@ namespace TypesTarefa {
             };
         };
     }
+
+    export namespace Filtrar {
+        export const route = "/api/tarefas/filtrar" as const;
+
+        export const InputSchema = z4.object({
+            data: z4.object({
+                categoria: TypesTarefa.CategoriaEnum.optional(),
+                prioridade: z4.enum(["Baixa", "Média", "Alta"]).optional(),
+            }),
+        });
+        export type Input = z4.infer<typeof InputSchema>;
+
+        type Output = {
+            tarefas: TypesTarefa.TarefaBase[];
+        };
+
+        export type Response = TypesResponse.Response<Output>;
+    }
+
 }
 
 export default TypesTarefa;

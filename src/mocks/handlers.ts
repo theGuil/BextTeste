@@ -15,6 +15,9 @@ const saveUsers = (users: T.Auth.User[]) => {
 
 let users: T.Auth.User[] = loadUsers();
 
+
+
+
 const loadTarefas = (): T.Tarefa.TarefaBase[] => {
     const data = localStorage.getItem(STORAGE_KEY);
     return data
@@ -22,19 +25,53 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
         : [
             {
                 id: 1,
-                titulo: "Aprender Vue 3",
-                descricao: "Estudar Composition API",
+                titulo: "Estudar matemática financeira",
+                descricao: "Revisar juros compostos e amortização.",
                 prioridade: "Alta",
                 data_conclusao: "2024-01-10",
+                categoria: "Estudo",
             },
             {
                 id: 2,
-                titulo: "Aprender Vue 3 + TSX",
-                descricao: "Vue 3 com TypeScript",
+                titulo: "Ler capítulo de algoritmos",
+                descricao: "Estudar estruturas de dados básicas.",
                 prioridade: "Média",
                 data_conclusao: "2024-01-15",
+                categoria: "Estudo",
             },
-        ];
+            {
+                id: 3,
+                titulo: "Finalizar relatório mensal",
+                descricao: "Compilar métricas e enviar para a gerência.",
+                prioridade: "Alta",
+                data_conclusao: "2024-01-12",
+                categoria: "Trabalho",
+            },
+            {
+                id: 4,
+                titulo: "Reunião com equipe",
+                descricao: "Alinhar metas do próximo sprint.",
+                prioridade: "Baixa",
+                data_conclusao: "2024-01-18",
+                categoria: "Trabalho",
+            },
+            {
+                id: 5,
+                titulo: "Ir à academia",
+                descricao: "Treino de musculação e cardio.",
+                prioridade: "Média",
+                data_conclusao: "2024-01-11",
+                categoria: "Pessoal",
+            },
+            {
+                id: 6,
+                titulo: "Organizar finanças",
+                descricao: "Revisar gastos e planejar orçamento do mês.",
+                prioridade: "Alta",
+                data_conclusao: "2024-01-20",
+                categoria: "Pessoal",
+            },
+        ]
 };
 
 const save = (data: T.Tarefa.TarefaBase[]) => {
@@ -112,6 +149,35 @@ export const handlers = [
 
         return HttpResponse.json(output, { status: 200 });
     }),
+
+    http.get(T.Tarefa.Filtrar.route, ({ request }) => {
+        const url = new URL(request.url);
+
+        const categoria = url.searchParams.get("categoria") as T.Tarefa.TarefaBase["categoria"] | null;
+        const prioridade = url.searchParams.get("prioridade") as T.Tarefa.TarefaBase["prioridade"] | null;
+
+        let resultado = loadTarefas();
+
+        if (categoria) {
+            resultado = resultado.filter(t => t.categoria === categoria);
+        }
+
+        if (prioridade) {
+            resultado = resultado.filter(t => t.prioridade === prioridade);
+        }
+
+        const output: T.Tarefa.Filtrar.Response = {
+            status: "success",
+            code: 200,
+            message: "Tarefas filtradas com sucesso",
+            data: {
+                tarefas: resultado,
+            },
+        };
+
+        return HttpResponse.json(output, { status: 200 });
+    }),
+
 
     http.post(T.Auth.Register.route, async ({ request }): Promise<HttpResponse<T.Auth.Register.Response>> => {
         const body = (await request.json()) as T.Auth.Register.Input;
