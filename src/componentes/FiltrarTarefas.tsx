@@ -58,6 +58,10 @@ export default defineComponent(() => {
         open.value = false;
     };
 
+    const fecharModal = () => {
+        open.value = false;
+    };
+
     const handleClickOutside = (event: MouseEvent) => {
         if (popupRef.value && !popupRef.value.contains(event.target as Node)) {
             open.value = false;
@@ -78,7 +82,7 @@ export default defineComponent(() => {
                     </svg>
 
                     {temFiltro.value && (
-                        <span class="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-indigo-600 text-[10px] text-white font-medium shadow">
+                        <span class="absolute -top-1 -right-1 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-neutral-600 text-[10px] text-white font-medium shadow">
                             {totalFiltros.value}
                         </span>
                     )}
@@ -92,59 +96,69 @@ export default defineComponent(() => {
             </div>
 
             {open.value && (
-                <div
-                    ref={popupRef}
-                    class="z-50 bg-white rounded-2xl shadow-xl border border-slate-100 p-4
-                           fixed inset-x-4 top-1/2 -translate-y-1/2
-                           sm:absolute sm:top-full sm:left-1/2 sm:-translate-x-1/2 sm:mt-2 sm:translate-y-0
-                           w-auto sm:w-64"
-                >
-                    <h3 class="text-sm font-medium text-slate-700 mb-3">Filtrar</h3>
+                <>
+                    <div class="fixed inset-0 bg-black/40 z-40 sm:hidden" onClick={fecharModal} />
 
-                    <div class="space-y-3">
-                        <select
-                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            value={categoriaDraft.value}
-                            onChange={(e) => (categoriaDraft.value = (e.target as HTMLSelectElement).value as any)}
-                        >
-                            <option value="">Categoria</option>
-                            <option value="Pessoal">Pessoal</option>
-                            <option value="Trabalho">Trabalho</option>
-                            <option value="Estudo">Estudo</option>
-                        </select>
+                    <div
+                        ref={popupRef}
+                        class="z-50 bg-white rounded-2xl shadow-xl border border-slate-100 p-4
+                               fixed inset-x-4 top-1/2 -translate-y-1/2
+                               sm:absolute sm:top-full sm:left-1/2 sm:-translate-x-1/2 sm:mt-2 sm:translate-y-0
+                               w-auto sm:w-64"
+                    >
+                        <button onClick={fecharModal} class="absolute top-3 right-3 text-red-400 hover:text-red-600 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
 
-                        <select
-                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            value={prioridadeDraft.value}
-                            onChange={(e) => (prioridadeDraft.value = (e.target as HTMLSelectElement).value as any)}
-                        >
-                            <option value="">Prioridade</option>
-                            <option value="Baixa">Baixa</option>
-                            <option value="Média">Média</option>
-                            <option value="Alta">Alta</option>
-                        </select>
+                        <h3 class="text-sm font-medium text-slate-700 mb-3">Filtrar</h3>
 
-                        <select
-                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            value={concluidoDraft.value}
-                            onChange={(e) => (concluidoDraft.value = (e.target as HTMLSelectElement).value as any)}
-                        >
-                            <option value="">Status</option>
-                            <option value="false">Pendentes</option>
-                            <option value="true">Concluídas</option>
-                        </select>
+                        <div class="space-y-3">
+                            <select
+                                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500"
+                                value={categoriaDraft.value}
+                                onChange={(e) => (categoriaDraft.value = (e.target as HTMLSelectElement).value as any)}
+                            >
+                                <option value="">Categoria</option>
+                                <option value="Pessoal">Pessoal</option>
+                                <option value="Trabalho">Trabalho</option>
+                                <option value="Estudo">Estudo</option>
+                            </select>
 
-                        <div class="flex gap-2 pt-2">
-                            <button onClick={aplicarFiltro} class="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700 transition">
-                                Aplicar
-                            </button>
+                            <select
+                                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500"
+                                value={prioridadeDraft.value}
+                                onChange={(e) => (prioridadeDraft.value = (e.target as HTMLSelectElement).value as any)}
+                            >
+                                <option value="">Prioridade</option>
+                                <option value="Baixa">Baixa</option>
+                                <option value="Média">Média</option>
+                                <option value="Alta">Alta</option>
+                            </select>
 
-                            <button onClick={limparFiltro} class="flex-1 bg-slate-100 text-slate-600 text-xs py-2 rounded-lg hover:bg-slate-200 transition">
-                                Limpar
-                            </button>
+                            <select
+                                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-500"
+                                value={concluidoDraft.value}
+                                onChange={(e) => (concluidoDraft.value = (e.target as HTMLSelectElement).value as any)}
+                            >
+                                <option value="">Status</option>
+                                <option value="false">Pendentes</option>
+                                <option value="true">Concluídas</option>
+                            </select>
+
+                            <div class="flex gap-2 pt-2">
+                                <button onClick={aplicarFiltro} class="flex-1 bg-neutral-800 text-white text-xs py-2 rounded-lg hover:bg-neutral-700 transition">
+                                    Aplicar
+                                </button>
+
+                                <button onClick={limparFiltro} class="flex-1 bg-slate-100 text-slate-600 text-xs py-2 rounded-lg hover:bg-slate-200 transition">
+                                    Limpar
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
         </div>
     );
