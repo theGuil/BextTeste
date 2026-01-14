@@ -53,7 +53,7 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output);
+        return HttpResponse.json(output, { status: 200 });
     }),
 
     http.post(T.Tarefa.Criar.route, async ({ request }) => {
@@ -94,7 +94,7 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output);
+        return HttpResponse.json(output, { status: 200 });
     }),
 
     http.delete(T.Tarefa.Remover.route, ({ params }) => {
@@ -110,20 +110,29 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output);
+        return HttpResponse.json(output, { status: 200 });
     }),
 
-    http.post(T.Auth.Register.route, async ({ request }) => {
+    http.post(T.Auth.Register.route, async ({ request }): Promise<HttpResponse<T.Auth.Register.Response>> => {
         const body = (await request.json()) as T.Auth.Register.Input;
         const { email, senha } = body.data;
 
+        if (senha?.length < 6) {
+            return HttpResponse.json<T.Auth.Register.Response>({
+                status: "error",
+                code: 422,
+                message: "Senha deve ter no mínimo 6 caracteres",
+                data: null,
+            }, { status: 422 });
+        }
+
         if (users.find(u => u.email === email)) {
-            return HttpResponse.json({
+            return HttpResponse.json<T.Auth.Register.Response>({
                 status: "error",
                 code: 409,
                 message: "Email já cadastrado",
                 data: null,
-            });
+            }, { status: 409 });
         }
 
         const newUser: T.Auth.User = {
@@ -147,14 +156,15 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output);
-    }),
+        return HttpResponse.json<T.Auth.Register.Response>(output, { status: 201 });
+    }
+    ),
 
-    http.post(T.Auth.Login.route, async ({ request }) => {
+    http.post(T.Auth.Login.route, async ({ request }): Promise<HttpResponse<T.Auth.Login.Response>> => {
         const body = (await request.json()) as T.Auth.Login.Input;
         const { email, senha } = body.data;
 
-        const SAFE_USER = {
+        const SAFE_USER: T.Auth.User = {
             id: 1,
             email: "bextteste@gmail.com",
             senha: "123456",
@@ -170,12 +180,12 @@ export const handlers = [
         const user = users.find(u => u.email === email && u.senha === senha);
 
         if (!user) {
-            return HttpResponse.json({
+            return HttpResponse.json<T.Auth.Login.Response>({
                 status: "error",
                 code: 401,
                 message: "E-mail ou senha inválido!",
-                data: null as any,
-            });
+                data: null,
+            }, { status: 401 });
         }
 
         const output: T.Auth.Login.Response = {
@@ -191,7 +201,7 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output);
+        return HttpResponse.json<T.Auth.Login.Response>(output, { status: 200 });
     }
     )
 ];

@@ -44,7 +44,7 @@ export default defineComponent(() => {
     onMounted(load);
 
     watchEffect(() => {
-        console.log(ContextoTarefa.GetJsx.lista, "lista mudou");
+        // console.log(ContextoTarefa.GetJsx.lista, "lista mudou");
     });
 
     return () => (

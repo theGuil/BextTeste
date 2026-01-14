@@ -8,16 +8,31 @@ export default defineComponent(() => {
 
     const email = ref("");
     const senha = ref("");
+    const erroEmail = ref<string | null>(null);
+    const erroSenha = ref<string | null>(null);
 
     const register = async () => {
+        erroEmail.value = null;
+        erroSenha.value = null;
+
         if (!email.value || !senha.value) return;
 
-        await ContextoAuth.Api.Register({
+        const result = await ContextoAuth.Api.Register({
             data: {
                 email: email.value,
                 senha: senha.value,
             },
         });
+
+        if (result.code === 409) {
+            erroEmail.value = result.message;
+            return;
+        }
+
+        if (result.code === 422) {
+            erroSenha.value = result.message;
+            return;
+        }
 
         email.value = "";
         senha.value = "";
@@ -37,20 +52,30 @@ export default defineComponent(() => {
 
                 <div class="space-y-3 mb-6">
                     <input
-                        class="w-full px-3 py-2 text-black rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                        class={[
+                            "w-full px-3 py-2 text-black rounded-lg border transition focus:outline-none",
+                            erroEmail.value ? "border-red-400 focus:ring-2 focus:ring-red-400" : "border-slate-300 focus:ring-2 focus:ring-indigo-500",
+                        ]}
                         value={email.value}
                         onInput={(e: any) => (email.value = e.target.value)}
                         placeholder="Email"
                         type="email"
                     />
 
+                    {erroEmail.value && <div class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{erroEmail.value}</div>}
+
                     <input
-                        class="w-full px-3 py-2 text-black rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
+                        class={[
+                            "w-full px-3 py-2 text-black rounded-lg border transition focus:outline-none",
+                            erroSenha.value ? "border-red-400 focus:ring-2 focus:ring-red-400" : "border-slate-300 focus:ring-2 focus:ring-indigo-500",
+                        ]}
                         value={senha.value}
                         onInput={(e: any) => (senha.value = e.target.value)}
                         placeholder="Senha"
                         type="password"
                     />
+
+                    {erroSenha.value && <div class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{erroSenha.value}</div>}
 
                     <button
                         onClick={register}

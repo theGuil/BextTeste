@@ -95,10 +95,13 @@ const useAuthStore = defineStore("auth", {
 
                 const typed = data as T.Auth.Register.Response;
 
-                this.SetState(s => {
-                    s.user = typed.data.user;
-                    s.logado = true;
-                });
+
+                if (data.code === 201) {
+                    this.SetState(s => {
+                        s.user = typed.data.user;
+                        s.logado = true;
+                    });
+                }
 
                 return typed;
             } finally {

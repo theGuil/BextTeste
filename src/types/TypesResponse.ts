@@ -12,6 +12,7 @@ namespace TypesResponse {
         NOT_FOUND: 404,
         INTERNAL_ERROR: 500,
         UNAUTORIZATED: 409,
+        UNPROCESSABLE: 422,
     });
 
     export const ResponseSchema = z4.object({
