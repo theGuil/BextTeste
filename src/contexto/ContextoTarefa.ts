@@ -144,6 +144,11 @@ const useTarefaStore = defineStore("tarefa", {
                     params.append("prioridade", props.data.prioridade);
                 }
 
+                if (typeof props.data.concluido === "boolean") {
+                    params.append("concluido", String(props.data.concluido));
+                }
+
+
                 const url = `${T.Tarefa.Filtrar.route}?${params.toString()}`;
 
                 const res = await fetch(url, {

@@ -30,6 +30,7 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
                 prioridade: "Alta",
                 data_conclusao: "2024-01-10",
                 categoria: "Estudo",
+                concluido: false,
             },
             {
                 id: 2,
@@ -38,6 +39,7 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
                 prioridade: "Média",
                 data_conclusao: "2024-01-15",
                 categoria: "Estudo",
+                concluido: false,
             },
             {
                 id: 3,
@@ -46,6 +48,7 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
                 prioridade: "Alta",
                 data_conclusao: "2024-01-12",
                 categoria: "Trabalho",
+                concluido: false,
             },
             {
                 id: 4,
@@ -54,6 +57,7 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
                 prioridade: "Baixa",
                 data_conclusao: "2024-01-18",
                 categoria: "Trabalho",
+                concluido: false,
             },
             {
                 id: 5,
@@ -62,14 +66,25 @@ const loadTarefas = (): T.Tarefa.TarefaBase[] => {
                 prioridade: "Média",
                 data_conclusao: "2024-01-11",
                 categoria: "Pessoal",
+                concluido: false,
             },
             {
                 id: 6,
-                titulo: "Organizar finanças",
+                titulo: "Organizar finanças do mês",
                 descricao: "Revisar gastos e planejar orçamento do mês.",
                 prioridade: "Alta",
                 data_conclusao: "2024-01-20",
                 categoria: "Pessoal",
+                concluido: false,
+            },
+            {
+                id: 7,
+                titulo: "Organizar finanças da casa",
+                descricao: "Revisar gastos e planejar orçamento do mês.",
+                prioridade: "Alta",
+                data_conclusao: "2024-01-20",
+                categoria: "Pessoal",
+                concluido: true,
             },
         ]
 };
@@ -155,6 +170,7 @@ export const handlers = [
 
         const categoria = url.searchParams.get("categoria") as T.Tarefa.TarefaBase["categoria"] | null;
         const prioridade = url.searchParams.get("prioridade") as T.Tarefa.TarefaBase["prioridade"] | null;
+        const concluido = url.searchParams.get("concluido") as string | null;
 
         let resultado = loadTarefas();
 
@@ -165,6 +181,13 @@ export const handlers = [
         if (prioridade) {
             resultado = resultado.filter(t => t.prioridade === prioridade);
         }
+
+
+        if (concluido !== null) {
+            const concluidoBool = concluido === "true";
+            resultado = resultado.filter(t => t.concluido === concluidoBool);
+        }
+
 
         const output: T.Tarefa.Filtrar.Response = {
             status: "success",

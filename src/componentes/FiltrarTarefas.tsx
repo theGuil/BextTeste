@@ -9,14 +9,21 @@ export default defineComponent(() => {
 
     const categoriaDraft = ref<T.Tarefa.TarefaBase["categoria"] | "">("");
     const prioridadeDraft = ref<T.Tarefa.TarefaBase["prioridade"] | "">("");
+    const concluidoDraft = ref<"" | "true" | "false">("");
 
     const categoriaAplicada = ref<T.Tarefa.TarefaBase["categoria"] | "">("");
     const prioridadeAplicada = ref<T.Tarefa.TarefaBase["prioridade"] | "">("");
+    const concluidoAplicado = ref<"" | "true" | "false">("");
+
+    const load = async () => {
+        await ContextoTarefa.Api.Listar();
+    };
 
     const totalFiltros = computed(() => {
         let total = 0;
         if (categoriaAplicada.value) total++;
         if (prioridadeAplicada.value) total++;
+        if (concluidoAplicado.value) total++;
         return total;
     });
 
@@ -25,11 +32,13 @@ export default defineComponent(() => {
     const aplicarFiltro = () => {
         categoriaAplicada.value = categoriaDraft.value;
         prioridadeAplicada.value = prioridadeDraft.value;
+        concluidoAplicado.value = concluidoDraft.value;
 
         ContextoTarefa.Api.Filtrar({
             data: {
                 categoria: categoriaAplicada.value || undefined,
                 prioridade: prioridadeAplicada.value || undefined,
+                concluido: concluidoAplicado.value ? concluidoAplicado.value === "true" : undefined,
             },
         });
 
@@ -39,8 +48,11 @@ export default defineComponent(() => {
     const limparFiltro = () => {
         categoriaDraft.value = "";
         prioridadeDraft.value = "";
+        concluidoDraft.value = "";
+
         categoriaAplicada.value = "";
         prioridadeAplicada.value = "";
+        concluidoAplicado.value = "";
 
         ContextoTarefa.Api.Listar();
         open.value = false;
@@ -54,6 +66,8 @@ export default defineComponent(() => {
 
     onMounted(() => document.addEventListener("mousedown", handleClickOutside));
     onBeforeUnmount(() => document.removeEventListener("mousedown", handleClickOutside));
+
+    onMounted(load);
 
     return () => (
         <div class="relative flex flex-col items-center">
@@ -110,13 +124,23 @@ export default defineComponent(() => {
                             <option value="Alta">Alta</option>
                         </select>
 
+                        <select
+                            class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            value={concluidoDraft.value}
+                            onChange={(e) => (concluidoDraft.value = (e.target as HTMLSelectElement).value as any)}
+                        >
+                            <option value="">Status</option>
+                            <option value="false">Pendentes</option>
+                            <option value="true">Concluídas</option>
+                        </select>
+
                         <div class="flex gap-2 pt-2">
                             <button onClick={aplicarFiltro} class="flex-1 bg-indigo-600 text-white text-xs py-2 rounded-lg hover:bg-indigo-700 transition">
                                 Aplicar
                             </button>
 
                             <button onClick={limparFiltro} class="flex-1 bg-slate-100 text-slate-600 text-xs py-2 rounded-lg hover:bg-slate-200 transition">
-                                Cancelar
+                                Limpar
                             </button>
                         </div>
                     </div>

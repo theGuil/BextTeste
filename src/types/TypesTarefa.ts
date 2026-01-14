@@ -12,6 +12,7 @@ namespace TypesTarefa {
         prioridade: z4.enum(["Baixa", "Média", "Alta"]),
         categoria: CategoriaEnum,
         data_conclusao: z4.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        concluido: z4.boolean(),
     });
 
     export type TarefaBase = z4.infer<typeof TarefaBaseSchema>;
@@ -86,6 +87,7 @@ namespace TypesTarefa {
             data: z4.object({
                 categoria: TypesTarefa.CategoriaEnum.optional(),
                 prioridade: z4.enum(["Baixa", "Média", "Alta"]).optional(),
+                concluido: z4.boolean().optional(),
             }),
         });
         export type Input = z4.infer<typeof InputSchema>;
