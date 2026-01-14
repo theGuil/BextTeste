@@ -29,7 +29,7 @@ export default defineComponent(() => {
     });
 
     return () => (
-        <div class="min-h-screen bg-[#f9fafb]">
+        <div class="min-h-screen bg-[#eff3f7] app-safe">
             <header class="fixed top-0 left-0 right-0 h-12 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-50">
                 <div class="flex items-center gap-2 text-sm font-medium text-slate-900 tracking-tight">
                     <span class="w-2 h-2 rounded-full bg-green-500"></span>

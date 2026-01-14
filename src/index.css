@@ -15,4 +15,33 @@ body {
     color: #fff;
     font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
     background-image: linear-gradient(to bottom, #020917, #101725);
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.app-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: env(safe-area-inset-top);
+}
+
+/* Prevenção do zoom ao tocas nos inputs no IOS */
+
+input,
+textarea,
+select {
+    -webkit-text-size-adjust: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+/* iOS não dá zoom se a fonte for >= 16px */
+input,
+textarea,
+select {
+    font-size: 16px;
+}
+
+/* Bloquear double-tap zoom */
+* {
+    touch-action: manipulation;
 }

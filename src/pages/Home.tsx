@@ -53,7 +53,7 @@ export default defineComponent(() => {
     onMounted(load);
 
     return () => (
-        <div class="h-[calc(100vh-96px)] flex flex-col bg-slate-50 relative">
+        <div class="h-[calc(100vh-96px)] flex flex-col  relative">
             <header class="mb-4 px-2 md:px-4 flex items-center justify-between">
                 <h1 class="text-xl font-semibold text-slate-900">Tarefas</h1>
 
