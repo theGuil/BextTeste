@@ -87,13 +87,13 @@ export default defineComponent({
                         <div class="space-y-2">
                             <div class="flex">
                                 <label class="text-xs font-medium text-gray-700 uppercase tracking-wider pr-2">Título</label>
-                                <p class="text-[10px] text-gray-400 text-right">{titulo.value.length}/20</p>
+                                <p class="text-[10px] text-gray-400 text-right">{titulo.value.length}/50</p>
                             </div>
 
                             <input
                                 type="text"
                                 value={titulo.value}
-                                maxlength={20}
+                                maxlength={50}
                                 onInput={(e: any) => (titulo.value = e.target.value)}
                                 onKeydown={(e: KeyboardEvent) => {
                                     if (e.key === "Enter") salvar();
@@ -150,11 +150,11 @@ export default defineComponent({
                         <div class="space-y-2">
                             <div class="flex">
                                 <label class="text-xs font-medium text-gray-700 uppercase tracking-wider pr-2">Descrição</label>
-                                <p class="text-[10px] text-gray-400 text-right">{descricao.value.length}/50</p>
+                                <p class="text-[10px] text-gray-400 text-right">{descricao.value.length}/200</p>
                             </div>
                             <textarea
                                 value={descricao.value}
-                                maxlength={50}
+                                maxlength={200}
                                 onInput={(e: any) => (descricao.value = e.target.value)}
                                 onFocus={() => (isFocused.value = "descricao")}
                                 onBlur={() => (isFocused.value = "")}
