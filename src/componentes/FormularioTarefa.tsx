@@ -1,11 +1,6 @@
 /** @jsxImportSource vue */
-// IMPORTAÇÕES DO VUE:
 import { defineComponent, ref, watch, type PropType } from "vue";
-
-// CONTEXTO:
 import ContextoTarefa from "@/contexto/ContextoTarefa";
-
-// TYPES
 import type T from "@/types";
 
 export default defineComponent({
