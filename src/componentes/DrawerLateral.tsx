@@ -92,8 +92,7 @@ export default defineComponent({
                                 <span class="text-slate-600 text-lg leading-none">×</span>
                             </button>
                         </div>
-
-                        {slots.default?.()}
+                        <div class="p-6 ">{slots.default?.()}</div>
                     </aside>
                 </div>
             </teleport>

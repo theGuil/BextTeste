@@ -81,8 +81,8 @@ export default defineComponent({
         ];
 
         return () => (
-            <div class="min-h-screen bg-white flex justify-center p-4">
-                <div class="w-full max-w-md">
+            <div class="min-h-screen bg-white">
+                <div class="w-full">
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <div class="flex">
