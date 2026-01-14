@@ -118,10 +118,12 @@ export const handlers = [
         const { email, senha } = body.data;
 
         if (users.find(u => u.email === email)) {
-            return HttpResponse.json(
-                { message: "Email já cadastrado" },
-                { status: 409 }
-            );
+            return HttpResponse.json({
+                status: "error",
+                code: 409,
+                message: "Email já cadastrado",
+                data: null,
+            });
         }
 
         const newUser: T.Auth.User = {
@@ -133,7 +135,10 @@ export const handlers = [
         users.push(newUser);
         saveUsers(users);
 
-        const output: T.Auth.Register.Output = {
+        const output: T.Auth.Register.Response = {
+            status: "success",
+            code: 201,
+            message: "Usuário cadastrado com sucesso",
             data: {
                 user: {
                     id: newUser.id,
@@ -142,7 +147,7 @@ export const handlers = [
             },
         };
 
-        return HttpResponse.json(output, { status: 201 });
+        return HttpResponse.json(output);
     }),
 
     http.post(T.Auth.Login.route, async ({ request }) => {
@@ -165,13 +170,18 @@ export const handlers = [
         const user = users.find(u => u.email === email && u.senha === senha);
 
         if (!user) {
-            return HttpResponse.json(
-                { message: "Credenciais inválidas" },
-                { status: 401 }
-            );
+            return HttpResponse.json({
+                status: "error",
+                code: 401,
+                message: "E-mail ou senha inválido!",
+                data: null as any,
+            });
         }
 
-        const output: T.Auth.Login.Output = {
+        const output: T.Auth.Login.Response = {
+            status: "success",
+            code: 200,
+            message: "Login realizado com sucesso",
             data: {
                 token: "fake-jwt-token-" + user.id,
                 user: {
@@ -182,5 +192,6 @@ export const handlers = [
         };
 
         return HttpResponse.json(output);
-    }),
+    }
+    )
 ];

@@ -45,7 +45,7 @@ const useAuthStore = defineStore("auth", {
             }
         },
 
-        async Login(props: T.Auth.Login.Input): Promise<T.Auth.Login.Output | null> {
+        async Login(props: T.Auth.Login.Input): Promise<T.Auth.Login.Response> {
             try {
                 this.SetState(s => { s.loadingLogin = true });
 
@@ -58,17 +58,18 @@ const useAuthStore = defineStore("auth", {
                 const data = await res.json();
 
                 if (!res.ok) {
-                    console.error("Erro login:", data.message);
-                    return null;
+                    return data;
                 }
 
-                const typed = data as T.Auth.Login.Output;
+                const typed = data as T.Auth.Login.Response;
 
-                this.SetState(s => {
-                    s.user = typed.data.user;
-                    s.token = typed.data.token;
-                    s.logado = true;
-                });
+                if (typed?.code === 200) {
+                    this.SetState(s => {
+                        s.user = typed?.data?.user;
+                        s.token = typed?.data?.token;
+                        s.logado = true;
+                    });
+                }
 
                 return typed;
             } finally {
@@ -76,11 +77,11 @@ const useAuthStore = defineStore("auth", {
             }
         },
 
-        async Register(props: T.Auth.Register.Input): Promise<T.Auth.Register.Output | null> {
+        async Register(props: T.Auth.Register.Input): Promise<T.Auth.Register.Response> {
             try {
                 this.SetState(s => { s.loadingRegister = true });
 
-                const res = await fetch(T.Auth.Register.route, {
+                const res: globalThis.Response = await fetch(T.Auth.Register.route, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(props),
@@ -89,11 +90,10 @@ const useAuthStore = defineStore("auth", {
                 const data = await res.json();
 
                 if (!res.ok) {
-                    console.error("Erro register:", data.message);
-                    return null;
+                    return data;
                 }
 
-                const typed = data as T.Auth.Register.Output;
+                const typed = data as T.Auth.Register.Response;
 
                 this.SetState(s => {
                     s.user = typed.data.user;

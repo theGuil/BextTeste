@@ -1,5 +1,7 @@
 import z4 from "zod/v4";
 
+import TypesResponse from "./TypesResponse";
+
 namespace TypesAuth {
     export const UserSchema = z4.object({
         id: z4.number().int(),
@@ -20,12 +22,13 @@ namespace TypesAuth {
         });
         export type Input = z4.infer<typeof InputSchema>;
 
-        export type Output = {
-            data: {
-                token: string;
-                user: Omit<User, "senha">;
-            };
+        type Output = {
+            token: string;
+            user: Omit<User, "senha">;
         };
+
+        export type Response = TypesResponse.Response<Output>;
+
     }
 
     export namespace Register {
@@ -39,11 +42,12 @@ namespace TypesAuth {
         });
         export type Input = z4.infer<typeof InputSchema>;
 
-        export type Output = {
-            data: {
-                user: Omit<User, "senha">;
-            };
+        type Output = {
+            user: Omit<User, "senha">;
         };
+
+        export type Response = TypesResponse.Response<Output>;
+
     }
 }
 
