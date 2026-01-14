@@ -60,7 +60,7 @@ const useTarefaStore = defineStore("tarefa", {
             }
         },
 
-        async Criar(props: T.Tarefa.Criar.Input): Promise<T.Tarefa.Criar.Output | null> {
+        async Criar(props: T.Tarefa.Criar.Input): Promise<T.Tarefa.Criar.Output> {
             try {
                 this.SetState(s => { s.loadingCriar = true });
 
