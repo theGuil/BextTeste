@@ -49,8 +49,8 @@ export default defineComponent(() => {
     };
 
     return () => (
-        <div class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-            <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+        <div class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4 sm:px-6">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8">
                 <div class="mb-6">
                     <h1 class="text-2xl font-semibold text-slate-800">{modo.value === "login" ? "Entrar" : "Criar conta"}</h1>
                     <p class="text-sm text-slate-500">Entre no app bext teste e começe as tarefas</p>
@@ -84,7 +84,7 @@ export default defineComponent(() => {
                     <button
                         onClick={submit}
                         disabled={ContextoAuth.GetJsx.loadingLogin || ContextoAuth.GetJsx.loadingRegister}
-                        class="w-full py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                        class="w-full py-2 rounded-lg bg-neutral-900 text-neutral-200 font-medium hover:bg-neutral-800 transition disabled:opacity-50"
                     >
                         {modo.value === "login"
                             ? ContextoAuth.GetJsx.loadingLogin

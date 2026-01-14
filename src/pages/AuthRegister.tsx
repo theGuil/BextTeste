@@ -43,7 +43,7 @@ export default defineComponent(() => {
     };
 
     return () => (
-        <div class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div class="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center px-4 justify-center">
             <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
                 <div class="mb-6">
                     <h1 class="text-2xl font-semibold text-slate-800">Criar conta</h1>
@@ -80,7 +80,7 @@ export default defineComponent(() => {
                     <button
                         onClick={register}
                         disabled={ContextoAuth.GetJsx.loadingRegister}
-                        class="w-full py-2 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition disabled:opacity-50"
+                        class="w-full py-2 rounded-lg bg-neutral-900 text-neutral-200 font-medium hover:bg-neutral-800 transition disabled:opacity-50"
                     >
                         {ContextoAuth.GetJsx.loadingRegister ? "Criando conta..." : "Registrar"}
                     </button>
