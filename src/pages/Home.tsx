@@ -8,14 +8,24 @@ import DrawerLateral from "@/componentes/DrawerLateral";
 import FormularioTarefa from "@/componentes/FormularioTarefa";
 // TYPES
 import type { TypeDrawerPadraoRef } from "@/componentes/DrawerLateral";
+import type T from "@/types";
 
 export default defineComponent(() => {
     const drawerRef = ref<TypeDrawerPadraoRef | null>(null);
 
-    const load = async () => ContextoTarefa.Api.Listar();
+    const load = async () => {
+        await ContextoTarefa.Api.Listar();
+    };
 
     const remove = async (id: number) => {
         await ContextoTarefa.Api.Remover({ params: { id } });
+    };
+
+    const editar = (tarefa: T.Tarefa.TarefaBase) => {
+        ContextoTarefa.SetState((s) => {
+            s.selecionada = tarefa;
+        });
+        drawerRef.value?.abrir();
     };
 
     const colunas = ["Baixa", "Média", "Alta"] as const;
@@ -23,7 +33,7 @@ export default defineComponent(() => {
     const tarefasPorPrioridade = computed(() =>
         colunas.map((p) => ({
             prioridade: p,
-            itens: ContextoTarefa.GetJsx.lista.filter((t) => t.prioridade === p),
+            itens: ContextoTarefa.GetState.lista.filter((t) => t.prioridade === p),
         }))
     );
 
@@ -41,7 +51,15 @@ export default defineComponent(() => {
             <div class="mb-4 p-1 md:p-2 flex items-center justify-between">
                 <h1 class="text-lg font-semibold text-slate-900">Kanban de Tarefas</h1>
 
-                <button onClick={() => drawerRef.value?.abrir()} class="h-10 px-4 rounded-xl bg-black text-white text-sm hover:bg-slate-800 transition">
+                <button
+                    onClick={() => {
+                        ContextoTarefa.SetState((s) => {
+                            s.selecionada = null;
+                        });
+                        drawerRef.value?.abrir();
+                    }}
+                    class="h-10 px-4 rounded-xl bg-black text-white text-sm hover:bg-slate-800 transition"
+                >
                     Nova tarefa
                 </button>
             </div>
@@ -63,9 +81,15 @@ export default defineComponent(() => {
                                     <div class="flex items-center justify-between mt-2">
                                         <span class={["px-2 py-0.5 rounded-full text-xs", corPrioridade(tarefa.prioridade)]}>{tarefa.prioridade}</span>
 
-                                        <button class="text-rose-500 text-xs" onClick={() => remove(tarefa.id)}>
-                                            Excluir
-                                        </button>
+                                        <div class="flex gap-2">
+                                            <button class="text-xs text-blue-500 hover:text-blue-800" onClick={() => editar(tarefa)}>
+                                                Editar
+                                            </button>
+
+                                            <button class="text-rose-500 text-xs hover:text-rose-700" onClick={() => remove(tarefa.id)}>
+                                                Excluir
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -74,7 +98,7 @@ export default defineComponent(() => {
                 ))}
             </section>
 
-            <DrawerLateral ref={drawerRef} title="Nova tarefa" subTitle="Organize seu dia de forma eficiente">
+            <DrawerLateral ref={drawerRef} title={ContextoTarefa.GetJsx.selecionada ? "Editar tarefa" : "Nova tarefa"} subTitle="Organize seu dia de forma eficiente">
                 {() => <FormularioTarefa sucessoSalvar={drawerRef?.value?.fechar} />}
             </DrawerLateral>
         </div>

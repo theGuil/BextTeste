@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
-import { produce } from "immer";
+
+import { produce, setAutoFreeze } from "immer";
+
 import T from "@/types";
+
+setAutoFreeze(false);
 
 type Tarefa = T.Tarefa.TarefaBase;
 
@@ -41,7 +45,7 @@ const useTarefaStore = defineStore("tarefa", {
             });
         },
 
-        async Listar(): Promise<T.Tarefa.Listar.Output | null> {
+        async Listar(): Promise<T.Tarefa.Listar.Output> {
             try {
                 this.SetState(s => { s.loading = true });
 
@@ -85,13 +89,13 @@ const useTarefaStore = defineStore("tarefa", {
             }
         },
 
-        async Atualizar(props: T.Tarefa.Atualizar.Input): Promise<T.Tarefa.Atualizar.Output | null> {
+        async Atualizar(props: T.Tarefa.Atualizar.Input): Promise<T.Tarefa.Atualizar.Output> {
             const url = T.Tarefa.Atualizar.route.replace(":id", String(props.params.id));
 
             const res = await fetch(url, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(props),
+                body: JSON.stringify(props.data),
             });
 
             const data: T.Tarefa.Atualizar.Output = await res.json();
@@ -109,7 +113,7 @@ const useTarefaStore = defineStore("tarefa", {
             return data;
         },
 
-        async Remover(props: T.Tarefa.Remover.Input): Promise<T.Tarefa.Remover.Output | null> {
+        async Remover(props: T.Tarefa.Remover.Input): Promise<T.Tarefa.Remover.Output> {
             const url = T.Tarefa.Remover.route.replace(":id", String(props.params.id));
 
             const res = await fetch(url, { method: "DELETE" });

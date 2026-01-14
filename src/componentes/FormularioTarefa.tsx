@@ -1,6 +1,6 @@
 /** @jsxImportSource vue */
 // IMPORTAÇÕES DO VUE:
-import { defineComponent, ref, type PropType } from "vue";
+import { defineComponent, ref, watch, type PropType } from "vue";
 
 // CONTEXTO:
 import ContextoTarefa from "@/contexto/ContextoTarefa";
@@ -23,22 +23,49 @@ export default defineComponent({
         const descricao = ref<string>("");
         const isFocused = ref("");
 
+        watch(
+            () => ContextoTarefa.GetJsx.selecionada,
+            () => {
+                const tarefa = ContextoTarefa.GetJsx.selecionada;
+                if (tarefa) {
+                    titulo.value = tarefa.titulo;
+                    descricao.value = tarefa.descricao;
+                    prioridade.value = tarefa.prioridade;
+                    categoria.value = tarefa.categoria;
+                }
+            },
+            { immediate: true }
+        );
+
         const salvar = async () => {
             if (!titulo.value.trim()) return;
+            const tarefaSelecionada = ContextoTarefa.GetJsx.selecionada;
 
-            const result = await ContextoTarefa.Api.Criar({
-                data: {
-                    id: Date.now(),
-                    titulo: titulo.value,
-                    descricao: descricao.value || "",
-                    prioridade: prioridade.value,
-                    data_conclusao: "2024-12-31",
-                    categoria: categoria.value,
-                },
-            });
+            if (tarefaSelecionada) {
+                const result = await ContextoTarefa.Api.Atualizar({
+                    params: { id: tarefaSelecionada.id },
+                    data: {
+                        titulo: titulo.value,
+                        descricao: descricao.value || "",
+                        prioridade: prioridade.value,
+                        categoria: categoria.value,
+                    },
+                });
 
-            if (props.sucessoSalvar) {
-                props.sucessoSalvar(result);
+                props.sucessoSalvar?.(result);
+            } else {
+                const result = await ContextoTarefa.Api.Criar({
+                    data: {
+                        id: Date.now(),
+                        titulo: titulo.value,
+                        descricao: descricao.value || "",
+                        prioridade: prioridade.value,
+                        data_conclusao: "2024-12-31",
+                        categoria: categoria.value,
+                    },
+                });
+
+                props.sucessoSalvar?.(result);
             }
 
             titulo.value = "";
@@ -54,7 +81,7 @@ export default defineComponent({
         ];
 
         return () => (
-            <div class="min-h-screen bg-white flex  justify-center p-4">
+            <div class="min-h-screen bg-white flex justify-center p-4">
                 <div class="w-full max-w-md">
                     <div class="space-y-6">
                         <div class="space-y-2">
@@ -75,13 +102,13 @@ export default defineComponent({
                                 onBlur={() => (isFocused.value = "")}
                                 placeholder="Ex: Revisar código do projeto"
                                 class={`
-                                w-full px-0 py-3 text-base
-                                border-0 border-b-2 transition-all duration-200
-                                bg-transparent
-                                placeholder:text-gray-400
-                                focus:outline-none focus:ring-0
-                                ${isFocused.value === "titulo" ? "border-black" : "border-gray-200"}
-                            `}
+                                    w-full px-0 py-3 text-base
+                                    border-0 border-b-2 transition-all duration-200
+                                    bg-transparent
+                                    placeholder:text-gray-400
+                                    focus:outline-none focus:ring-0
+                                    ${isFocused.value === "titulo" ? "border-black" : "border-gray-200"}
+                                `}
                             />
                         </div>
 
@@ -92,25 +119,12 @@ export default defineComponent({
                                     <select
                                         value={categoria.value}
                                         onChange={(e: any) => (categoria.value = e.target.value)}
-                                        class="
-                                            w-full px-4 py-2.5 text-sm
-                                            bg-gray-50 hover:bg-gray-100
-                                            border border-gray-200
-                                            rounded-lg
-                                            transition-all duration-200
-                                            focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-0
-                                            appearance-none cursor-pointer
-                                    "
+                                        class="w-full px-4 py-2.5 text-sm bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 appearance-none cursor-pointer"
                                     >
                                         <option>Pessoal</option>
                                         <option>Trabalho</option>
                                         <option>Estudo</option>
                                     </select>
-                                    <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
                                 </div>
                             </div>
 
@@ -120,15 +134,7 @@ export default defineComponent({
                                     <select
                                         value={prioridade.value}
                                         onChange={(e: any) => (prioridade.value = e.target.value)}
-                                        class="
-                                            w-full px-4 py-2.5 text-sm
-                                            bg-gray-50 hover:bg-gray-100
-                                            border border-gray-200
-                                            rounded-lg
-                                            transition-all duration-200
-                                            focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-0
-                                            appearance-none cursor-pointer
-                                        "
+                                        class="w-full px-4 py-2.5 text-sm bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 appearance-none cursor-pointer"
                                     >
                                         <option>Baixa</option>
                                         <option>Média</option>
@@ -136,9 +142,6 @@ export default defineComponent({
                                     </select>
                                     <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
                                         <div class={`w-2 h-2 rounded-full ${prioridades.find((p) => p.value === prioridade.value)?.color}`} />
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width={2} d="M19 9l-7 7-7-7" />
-                                        </svg>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +150,7 @@ export default defineComponent({
                         <div class="space-y-2">
                             <div class="flex">
                                 <label class="text-xs font-medium text-gray-700 uppercase tracking-wider pr-2">Descrição</label>
-                                <p class="text-[10px] text-gray-400 text-right">{titulo.value.length}/50</p>
+                                <p class="text-[10px] text-gray-400 text-right">{descricao.value.length}/50</p>
                             </div>
                             <textarea
                                 value={descricao.value}
@@ -161,14 +164,14 @@ export default defineComponent({
                                 }}
                                 rows={4}
                                 class={`
-                                w-full px-4 py-3 text-sm
-                                bg-gray-50
-                                border-2 transition-all duration-200
-                                rounded-xl resize-none
-                                placeholder:text-gray-400
-                                focus:outline-none focus:bg-white
-                                ${isFocused.value === "descricao" ? "border-gray-900 bg-white" : "border-gray-200"}
-                            `}
+                                    w-full px-4 py-3 text-sm
+                                    bg-gray-50
+                                    border-2 transition-all duration-200
+                                    rounded-xl resize-none
+                                    placeholder:text-gray-400
+                                    focus:outline-none focus:bg-white
+                                    ${isFocused.value === "descricao" ? "border-gray-900 bg-white" : "border-gray-200"}
+                                `}
                             />
                         </div>
 
@@ -176,17 +179,17 @@ export default defineComponent({
                             onClick={salvar}
                             disabled={!titulo.value.trim()}
                             class={`
-                            w-full h-12 rounded-xl
-                            text-sm font-medium
-                            transition-all duration-200
-                            ${
-                                titulo.value.trim()
-                                    ? "bg-black text-white hover:bg-gray-800 active:scale-[0.98] shadow-sm hover:shadow"
-                                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            }
-                        `}
+                                w-full h-12 rounded-xl
+                                text-sm font-medium
+                                transition-all duration-200
+                                ${
+                                    titulo.value.trim()
+                                        ? "bg-black text-white hover:bg-gray-800 active:scale-[0.98] shadow-sm hover:shadow"
+                                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                }
+                            `}
                         >
-                            {titulo.value.trim() ? "Criar tarefa" : "Digite um título para continuar"}
+                            {ContextoTarefa.GetJsx.selecionada ? "Salvar tarefa" : titulo.value.trim() ? "Criar tarefa" : "Digite um título para continuar"}
                         </button>
                     </div>
 
