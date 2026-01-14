@@ -27,11 +27,16 @@ export default defineComponent({
             () => ContextoTarefa.GetJsx.selecionada,
             () => {
                 const tarefa = ContextoTarefa.GetJsx.selecionada;
-                if (tarefa) {
+                if (tarefa?.id) {
                     titulo.value = tarefa.titulo;
                     descricao.value = tarefa.descricao;
                     prioridade.value = tarefa.prioridade;
                     categoria.value = tarefa.categoria;
+                } else if (tarefa === null) {
+                    titulo.value = "";
+                    descricao.value = "";
+                    prioridade.value = "Média";
+                    categoria.value = "Pessoal";
                 }
             },
             { immediate: true }

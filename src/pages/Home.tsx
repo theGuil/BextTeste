@@ -98,7 +98,16 @@ export default defineComponent(() => {
                 ))}
             </section>
 
-            <DrawerLateral ref={drawerRef} title={ContextoTarefa.GetJsx.selecionada ? "Editar tarefa" : "Nova tarefa"} subTitle="Organize seu dia de forma eficiente">
+            <DrawerLateral
+                onClose={() => {
+                    ContextoTarefa.SetState((s) => {
+                        s.selecionada = null;
+                    });
+                }}
+                ref={drawerRef}
+                title={ContextoTarefa.GetJsx.selecionada ? "Editar tarefa" : "Nova tarefa"}
+                subTitle="Organize seu dia de forma eficiente"
+            >
                 {() => <FormularioTarefa sucessoSalvar={drawerRef?.value?.fechar} />}
             </DrawerLateral>
         </div>
