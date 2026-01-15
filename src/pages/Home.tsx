@@ -47,6 +47,7 @@ export default defineComponent(() => {
             data: {
                 ...tarefaParaConcluir.value,
                 concluido: true,
+                data_conclusao: new Date().toISOString(),
             },
         });
 
@@ -67,6 +68,7 @@ export default defineComponent(() => {
             data: {
                 ...tarefaSelecionada.value,
                 concluido: false,
+                data_conclusao: "",
             },
         });
 
@@ -97,6 +99,12 @@ export default defineComponent(() => {
             Alta: "bg-rose-100 text-rose-700",
         }[p]);
 
+    const formatarData = (iso?: string | null) => {
+        if (!iso) return null;
+        const d = new Date(iso);
+        return d.toLocaleDateString("pt-BR");
+    };
+
     return () => (
         <div class="h-[calc(100vh-96px)] flex flex-col relative">
             <header class="mb-4 px-2 md:px-4 flex items-center justify-between">
@@ -122,7 +130,7 @@ export default defineComponent(() => {
                     <div class="bg-white/80 backdrop-blur rounded-2xl border border-slate-200 flex flex-col overflow-hidden">
                         <div class="px-4 py-3 border-b flex items-center justify-between">
                             <h2 class="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                {coluna.prioridade}
+                                Prioridade {coluna.prioridade}
                                 <span class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{coluna.itens.length}</span>
                             </h2>
                         </div>
@@ -143,6 +151,10 @@ export default defineComponent(() => {
                                                 <h3 class={["font-medium text-sm leading-tight", concluida ? "text-slate-500 line-through" : "text-slate-800"]}>{tarefa.titulo}</h3>
 
                                                 <p class={["text-xs line-clamp-2", concluida ? "text-slate-400" : "text-slate-500"]}>{tarefa.descricao}</p>
+
+                                                {concluida && tarefa.data_conclusao && (
+                                                    <p class="text-[11px] text-emerald-600">Concluída em {formatarData(tarefa.data_conclusao)}</p>
+                                                )}
                                             </div>
 
                                             <span
