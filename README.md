@@ -1,3 +1,11 @@
+## Experiência durante a execução do teste
+
+Neste projeto, adotei inicialmente a criação das interfaces em TypeScript utilizando _type-safe_ em conjunto com a biblioteca **Zod**, com o objetivo de facilitar a construção dos demais módulos.
+
+Para a simulação de APIs, utilizei a biblioteca **MSW**, garantindo um ambiente de desenvolvimento mais próximo do real, sem dependência de backend.
+
+O gerenciamento de estado foi implementado com **Pinia**, estruturado dentro de uma classe com funções bem definidas e fortemente tipadas pelas interfaces, o que proporcionou maior organização, previsibilidade e facilidade de manutenção futura do projeto.
+
 ## Login para testes
 
 email: bextteste@gmail.com
